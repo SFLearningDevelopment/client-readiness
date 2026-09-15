@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026091404 -->
+<!-- build: 2026091405 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091404">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091405">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 5 of 10 &middot; 3 min</span></p>
     <h1>Attendance, Leave &amp; Performance Management</h1>
     <p class="deck">Which processes apply to your attendance, leave and performance while you are on assignment.</p>
@@ -215,13 +215,13 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="crc-m4.html?v=2026091404">&#8592; Module 4</a>
-  <a class="pbtn off" id="nextbtn" href="crc-m6.html?v=2026091404">Module 6 &#8594;</a>
+  <a class="pbtn ghost" href="crc-m4.html?v=2026091405">&#8592; Module 4</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m6.html?v=2026091405">Module 6 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 5 of 10</div>
-  <div>build 2026091404</div>
+  <div>build 2026091405</div>
 </footer>
 
 </div>
@@ -641,18 +641,24 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     function paint(state){
       var done = window.SFProgress.isDone(state, MK);
       box.checked = done;
-      box.disabled = done;
       lbl.classList.toggle('checked', done);
       if (done) {
         var m = (state.modules || {})[MK] || {};
         sync.textContent = 'Completed on ' + (m.completedOn || '') + (m.completedAt ? ' at ' + m.completedAt : '');
         if (GATE.length) markGateSatisfied();
+        /* After markGateSatisfied, which unlocks the box: a completed
+           module stays ticked and locked, so it cannot be un-ticked. */
+        box.disabled = true;
         unlockNext();
       } else {
         lockNext();
+        /* The box is only ever enabled by a passed gate. Never default it
+           to enabled here -- that was the 2026091405 defect. */
         if (!GATE.length) box.disabled = false;
         else if (gateRead(user.uid)[MK]) markGateSatisfied();
+        else box.disabled = true;
       }
+      lbl.classList.toggle('locked', box.disabled && !done);
       renderBar(state);
     }
 
