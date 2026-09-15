@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026091406 -->
+<!-- build: 2026091407 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091406">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091407">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 6 of 10 &middot; 3 min</span></p>
     <h1>Conflict Resolution &amp; Grievances</h1>
     <p class="deck">How to handle disagreements at a client site without making the situation worse.</p>
@@ -213,13 +213,13 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="crc-m5.html?v=2026091406">&#8592; Module 5</a>
-  <a class="pbtn off" id="nextbtn" href="crc-m7.html?v=2026091406">Module 7 &#8594;</a>
+  <a class="pbtn ghost" href="crc-m5.html?v=2026091407">&#8592; Module 5</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m7.html?v=2026091407">Module 7 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 6 of 10</div>
-  <div>build 2026091406</div>
+  <div>build 2026091407</div>
 </footer>
 
 </div>
@@ -321,25 +321,14 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     if (typeof x !== "string") return false;
     return NOMINATED.indexOf(x.toLowerCase()) !== -1;
   }
-  function showNotNominated(email){
+  function showNotNominated(){
     const card = document.getElementById("sf-auth");
     if (!card) return;
     card.style.display = "flex";
     card.innerHTML = '<div class="sf-auth-card">'
       + '<div class="sf-auth-badge">SF Knowledge Hub</div>'
       + '<h2>You are not nominated to this course</h2>'
-      + '<p class="sf-auth-sub">Client Readiness &amp; Compliance Training is limited to nominated '
-      + 'employees while it is under review. You are signed in as <strong></strong>.</p>'
-      + '<button class="sf-google" id="sf-switch">Sign out and use another account</button>'
-      + '<div class="sf-note">If you believe you should have access, contact the SF Knowledge Hub admin.</div>'
       + '</div>';
-    const who = card.querySelector("strong");
-    if (who) who.textContent = email || "";     /* textContent, never innerHTML */
-    const sw = document.getElementById("sf-switch");
-    if (sw) sw.addEventListener("click", function(){
-      if (signOutFn) signOutFn().then(function(){ location.reload(); });
-      else location.reload();
-    });
   }
   function proceed(user){
     const el = document.getElementById("sf-auth"); if (el) el.remove();
@@ -370,7 +359,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
           await signOutFn();
           return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
         }
-        if (!isNominated(email)) return showNotNominated(email);
+        if (!isNominated(email)) return showNotNominated();
         return proceed(u);
       } catch (e) {
         const code = e && e.code;
@@ -419,7 +408,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       /* Signed in and on-domain, but not on the list. Do not sign them out
          automatically: the session is shared with the SF Knowledge Hub and
          dropping it would sign them out of the Hub too. */
-      if (!isNominated(u.email)) return showNotNominated(u.email);
+      if (!isNominated(u.email)) return showNotNominated();
       proceed(u);
     });
     wireSignin();
@@ -706,7 +695,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       } else {
         lockNext();
         /* The box is only ever enabled by a passed gate. Never default it
-           to enabled here -- that was the 2026091406 defect. */
+           to enabled here -- that was the 2026091407 defect. */
         if (!GATE.length) box.disabled = false;
         else if (gateRead(user.uid)[MK]) markGateSatisfied();
         else box.disabled = true;
