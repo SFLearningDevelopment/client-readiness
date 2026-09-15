@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026091403 -->
+<!-- build: 2026091404 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -81,6 +81,21 @@ section.stage{background:var(--panel);border:1px solid var(--rule);border-radius
 .dd-dont .tag{color:var(--caution)}
 .dd ul{margin:0;padding-left:19px;font-size:15.5px}
 .dd li{margin-bottom:6px}
+section.stage.check{border-color:#CFDCCF;background:#FCFDFC}
+.glab{font-family:var(--sans);font-size:12px;font-weight:640;color:var(--ink-2);letter-spacing:.03em;margin:0 0 4px;text-transform:uppercase}
+.gstem{font-weight:600;margin:0 0 12px}
+.gq{margin-bottom:26px}
+.gq:last-of-type{margin-bottom:18px}
+.gopt{display:flex;gap:11px;align-items:flex-start;font-size:16px;margin-bottom:8px;cursor:pointer;max-width:70ch}
+.gopt input{margin-top:6px;accent-color:var(--level);width:16px;height:16px;flex:none}
+.gopt input:disabled+span{color:var(--ink-2)}
+.gfb{margin-top:12px}
+.gfb .callout{margin-bottom:0}
+.gactions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.gstate{font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+button.pbtn{border:0;cursor:pointer;font-family:var(--sans)}
+.done input:disabled{accent-color:#B9C2BA}
+.done label.locked{color:#8D979C;cursor:not-allowed}
 .recap{font-family:var(--sans);font-size:15px;color:var(--ink-2);border-top:1px solid var(--rule);
   margin-top:24px;padding-top:16px}
 .recap b{color:var(--ink);font-weight:620}
@@ -112,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091403">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091404">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 1 of 10 &middot; 2 min</span></p>
     <h1>SF Employee &amp; Client Relationship</h1>
     <p class="deck">Who your employer is, who directs your daily work, and what each side is responsible for.</p>
@@ -263,21 +278,36 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     <p class="recap"><b>Module recap.</b> Client manages the work. SF manages the employee. Keep that division clear and most of the situations in this training answer themselves.</p>
   </div>
 </section>
+<section class="stage check">
+  <div class="stage-head"><div class="num">?</div><h2>Check your understanding</h2></div>
+  <p class="goal">Answer correctly to unlock the completion box. You can try as many times as you need.</p>
+  <div class="stage-body">
+    <div class="gq" data-i="0">
+      <p class="gstem">You are three months into a client assignment. Who decides which tasks you pick up this week, and who decides how much leave you are entitled to?</p>
+      <label class="gopt"><input type="radio" name="g0" value="0"> <span>The client decides both.</span></label>
+      <label class="gopt"><input type="radio" name="g0" value="1"> <span>The client decides your tasks; SourceFuse decides your leave entitlement.</span></label>
+      <label class="gopt"><input type="radio" name="g0" value="2"> <span>SourceFuse decides both.</span></label>
+      <label class="gopt"><input type="radio" name="g0" value="3"> <span>Whichever manager you speak to most often decides both.</span></label>
+      <div class="gfb" id="gfb-0"></div>
+    </div>
+    <div class="gactions"><button class="pbtn" id="gcheck">Check answer</button><span class="gstate" id="gstate"></span></div>
+  </div>
+</section>
 
 <div class="done">
   <span class="tag">Completion</span>
-  <label id="lbl"><input type="checkbox" id="cmplt"> I have read and understood Module 1: SF Employee &amp; Client Relationship.</label>
+  <label id="lbl"><input type="checkbox" id="cmplt" disabled> I have read and understood Module 1: SF Employee &amp; Client Relationship.</label>
   <p class="sync" id="sync"></p>
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="index.html?v=2026091403">&#8592; Dashboard</a>
-  <a class="pbtn" href="crc-m2.html?v=2026091403">Module 2 &#8594;</a>
+  <a class="pbtn ghost" href="index.html?v=2026091404">&#8592; Dashboard</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m2.html?v=2026091404">Module 2 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 1 of 10</div>
-  <div>build 2026091403</div>
+  <div>build 2026091404</div>
 </footer>
 
 </div>
@@ -623,6 +653,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <script type="module">
 (function(){
   var MK = "crc-m1";
+  var GATE = [{"answer": 1, "why": "The client directs day-to-day work. Leave entitlement is part of your employment, which stays with SourceFuse."}];
 
   var KEYS = window.SFProgress.moduleKeys;
   function renderBar(state){
@@ -634,6 +665,15 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     return done;
   }
 
+
+  /* Gate state lives in localStorage only. Nothing here reaches Firestore. */
+  var GK = "sf-crc-gate:";
+  function gateRead(uid){
+    try { return JSON.parse(localStorage.getItem(GK + uid) || "{}"); } catch(_) { return {}; }
+  }
+  function gateWrite(uid, obj){
+    try { localStorage.setItem(GK + uid, JSON.stringify(obj)); } catch(_) {}
+  }
   window.SFAuth.mount(async function(user, signOut){
     document.getElementById('who').innerHTML =
       (user.email || '') + ' <button class="signout" id="signout">Sign out</button>';
@@ -643,6 +683,46 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     var box  = document.getElementById('cmplt');
     var lbl  = document.getElementById('lbl');
     var sync = document.getElementById('sync');
+    var nextbtn = document.getElementById('nextbtn');
+    var gcheck  = document.getElementById('gcheck');
+    var gstate  = document.getElementById('gstate');
+
+    function unlockBox(msg){
+      box.disabled = false;
+      if (gstate) gstate.textContent = msg || '';
+      if (gcheck) gcheck.style.display = 'none';
+      document.querySelectorAll('.gq input[type=radio]').forEach(function(r){ r.disabled = true; });
+    }
+    function lockNext(){ if (nextbtn) nextbtn.classList.add('off'); }
+    function unlockNext(){ if (nextbtn) nextbtn.classList.remove('off'); }
+
+    function markGateSatisfied(){
+      GATE.forEach(function(gq, i){
+        var rs = document.querySelectorAll('input[name="g' + i + '"]');
+        if (rs[gq.answer]) rs[gq.answer].checked = true;
+        var fb = document.getElementById('gfb-' + i);
+        if (fb) fb.innerHTML = '<div class="callout lens"><span class="tag">Correct</span><p>' + gq.why + '</p></div>';
+      });
+      unlockBox('Unlocked');
+    }
+
+    if (gcheck) gcheck.addEventListener('click', function(){
+      var allRight = true, unanswered = 0;
+      GATE.forEach(function(gq, i){
+        var sel = document.querySelector('input[name="g' + i + '"]:checked');
+        var fb  = document.getElementById('gfb-' + i);
+        if (!sel) { unanswered++; allRight = false; fb.innerHTML = ''; return; }
+        var ok = parseInt(sel.value, 10) === gq.answer;
+        if (!ok) allRight = false;
+        fb.innerHTML = ok
+          ? '<div class="callout lens"><span class="tag">Correct</span><p>' + gq.why + '</p></div>'
+          : '<div class="callout caution"><span class="tag">Not quite</span><p>Read the module again and try once more.</p></div>';
+      });
+      if (unanswered) { gstate.textContent = 'Answer every question first.'; return; }
+      if (!allRight) { gstate.textContent = 'Try again.'; return; }
+      var gs = gateRead(user.uid); gs[MK] = true; gateWrite(user.uid, gs);
+      unlockBox('Unlocked · you can now mark this module complete');
+    });
 
     function paint(state){
       var done = window.SFProgress.isDone(state, MK);
@@ -652,6 +732,12 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       if (done) {
         var m = (state.modules || {})[MK] || {};
         sync.textContent = 'Completed on ' + (m.completedOn || '') + (m.completedAt ? ' at ' + m.completedAt : '');
+        if (GATE.length) markGateSatisfied();
+        unlockNext();
+      } else {
+        lockNext();
+        if (!GATE.length) box.disabled = false;
+        else if (gateRead(user.uid)[MK]) markGateSatisfied();
       }
       renderBar(state);
     }
@@ -662,6 +748,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       if (!box.checked) return;
       var state = window.SFProgress.setLocal(MK, true);   /* localStorage first */
       paint(state);
+      unlockNext();
       sync.textContent = 'Saved on this device. Syncing\u2026';
       try {
         await window.SFProgress.sync(MK, true);
