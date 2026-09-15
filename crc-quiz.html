@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026091403 -->
+<!-- build: 2026091404 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -81,6 +81,21 @@ section.stage{background:var(--panel);border:1px solid var(--rule);border-radius
 .dd-dont .tag{color:var(--caution)}
 .dd ul{margin:0;padding-left:19px;font-size:15.5px}
 .dd li{margin-bottom:6px}
+section.stage.check{border-color:#CFDCCF;background:#FCFDFC}
+.glab{font-family:var(--sans);font-size:12px;font-weight:640;color:var(--ink-2);letter-spacing:.03em;margin:0 0 4px;text-transform:uppercase}
+.gstem{font-weight:600;margin:0 0 12px}
+.gq{margin-bottom:26px}
+.gq:last-of-type{margin-bottom:18px}
+.gopt{display:flex;gap:11px;align-items:flex-start;font-size:16px;margin-bottom:8px;cursor:pointer;max-width:70ch}
+.gopt input{margin-top:6px;accent-color:var(--level);width:16px;height:16px;flex:none}
+.gopt input:disabled+span{color:var(--ink-2)}
+.gfb{margin-top:12px}
+.gfb .callout{margin-bottom:0}
+.gactions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.gstate{font-family:var(--sans);font-size:13px;color:var(--ink-2)}
+button.pbtn{border:0;cursor:pointer;font-family:var(--sans)}
+.done input:disabled{accent-color:#B9C2BA}
+.done label.locked{color:#8D979C;cursor:not-allowed}
 .recap{font-family:var(--sans);font-size:15px;color:var(--ink-2);border-top:1px solid var(--rule);
   margin-top:24px;padding-top:16px}
 .recap b{color:var(--ink);font-weight:620}
@@ -112,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091403">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091404">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 10 of 10 &middot; 1 min</span></p>
     <h1>Scenario quiz &amp; acknowledgement</h1>
     <p class="deck">Ten short scenarios drawn from situations that arise on client assignments. Choose the best response for each, then submit your acknowledgement to complete the quarter.</p>
@@ -141,7 +156,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <div id="quiz"></div>
 
 <div class="pager" id="actions">
-  <a class="pbtn ghost" href="crc-m9.html?v=2026091403">&#8592; Module 9</a>
+  <a class="pbtn ghost" href="crc-m9.html?v=2026091404">&#8592; Module 9</a>
   <button class="pbtn" id="submit">Submit answers</button>
 </div>
 
@@ -171,12 +186,12 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 10 of 10 &middot; quiz and acknowledgement</div>
-  <div>build 2026091403</div>
+  <div>build 2026091404</div>
 </footer>
 
 </div>
 
-<script src="crc-question-bank.js?v=2026091403"></script>
+<script src="crc-question-bank.js?v=2026091404"></script>
 
 <!-- SF auth gate: Google SSO only + iframe breakout. Sign-in never runs framed. -->
 <script>
