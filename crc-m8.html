@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026091405 -->
+<!-- build: 2026091406 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091405">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026091406">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 8 of 10 &middot; 3 min</span></p>
     <h1>Confidentiality, Data Privacy &amp; Security</h1>
     <p class="deck">What you must protect, and the rules for handling it.</p>
@@ -223,13 +223,13 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="crc-m7.html?v=2026091405">&#8592; Module 7</a>
-  <a class="pbtn off" id="nextbtn" href="crc-m9.html?v=2026091405">Module 9 &#8594;</a>
+  <a class="pbtn ghost" href="crc-m7.html?v=2026091406">&#8592; Module 7</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m9.html?v=2026091406">Module 9 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 8 of 10</div>
-  <div>build 2026091405</div>
+  <div>build 2026091406</div>
 </footer>
 
 </div>
@@ -247,6 +247,18 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
   };
   const ALLOWED_DOMAIN = "sourcefuse.com";
+
+  /* ==== NOMINATION LIST =================================================
+     While the course is under review, only these addresses may open it.
+     After review, empty this array to admit every @sourcefuse.com account.
+     The same list appears in all eleven pages of this course.
+     ==================================================================== */
+  const NOMINATED = [
+    "ravdeep.singh@sourcefuse.com",
+    "akanksha.puri@sourcefuse.com",
+    "jv.ravichandran@sourcefuse.com",
+    "noushin.khan@sourcefuse.com"
+  ];
 
   let auth, GoogleProvider, signInPopup, onAuth, signOutFn, setPersist, localPersist;
   let readyCb = null;
@@ -313,6 +325,32 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     if (typeof x !== "string") return false;
     return x.toLowerCase().endsWith("@" + ALLOWED_DOMAIN);
   }
+  /* An empty NOMINATED list means the course is open to the whole domain. */
+  function isNominated(x){
+    if (!NOMINATED.length) return true;
+    if (typeof x !== "string") return false;
+    return NOMINATED.indexOf(x.toLowerCase()) !== -1;
+  }
+  function showNotNominated(email){
+    const card = document.getElementById("sf-auth");
+    if (!card) return;
+    card.style.display = "flex";
+    card.innerHTML = '<div class="sf-auth-card">'
+      + '<div class="sf-auth-badge">SF Knowledge Hub</div>'
+      + '<h2>You are not nominated to this course</h2>'
+      + '<p class="sf-auth-sub">Client Readiness &amp; Compliance Training is limited to nominated '
+      + 'employees while it is under review. You are signed in as <strong></strong>.</p>'
+      + '<button class="sf-google" id="sf-switch">Sign out and use another account</button>'
+      + '<div class="sf-note">If you believe you should have access, contact the SF Knowledge Hub admin.</div>'
+      + '</div>';
+    const who = card.querySelector("strong");
+    if (who) who.textContent = email || "";     /* textContent, never innerHTML */
+    const sw = document.getElementById("sf-switch");
+    if (sw) sw.addEventListener("click", function(){
+      if (signOutFn) signOutFn().then(function(){ location.reload(); });
+      else location.reload();
+    });
+  }
   function proceed(user){
     const el = document.getElementById("sf-auth"); if (el) el.remove();
     if (readyCb) readyCb(user, signOutFn);
@@ -342,6 +380,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
           await signOutFn();
           return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
         }
+        if (!isNominated(email)) return showNotNominated(email);
         return proceed(u);
       } catch (e) {
         const code = e && e.code;
@@ -366,6 +405,10 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     }
 
     document.body.insertAdjacentHTML("beforeend", signinHTML());
+    /* Hidden until onAuth reports no session. A signed-in nominated user
+       goes straight through without the overlay appearing at all. */
+    const authCard = document.getElementById("sf-auth");
+    if (authCard) authCard.style.display = "none";
     try { await initFirebase(); }
     catch (e) {
       console.log("[auth] init failed:", e && e.message);
@@ -373,9 +416,21 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       return;
     }
     if (onAuth) onAuth(async (u) => {
-      if (!u) return;
-      if (validDomain(u.email)) proceed(u);
-      else { await signOutFn(); fail("Sign in with your @" + ALLOWED_DOMAIN + " account."); }
+      if (!u) {
+        /* No session anywhere on this origin: offer Google sign-in. */
+        if (authCard) authCard.style.display = "flex";
+        return;
+      }
+      if (!validDomain(u.email)) {
+        await signOutFn();
+        if (authCard) authCard.style.display = "flex";
+        return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
+      }
+      /* Signed in and on-domain, but not on the list. Do not sign them out
+         automatically: the session is shared with the SF Knowledge Hub and
+         dropping it would sign them out of the Hub too. */
+      if (!isNominated(u.email)) return showNotNominated(u.email);
+      proceed(u);
     });
     wireSignin();
   }
@@ -661,7 +716,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       } else {
         lockNext();
         /* The box is only ever enabled by a passed gate. Never default it
-           to enabled here -- that was the 2026091405 defect. */
+           to enabled here -- that was the 2026091406 defect. */
         if (!GATE.length) box.disabled = false;
         else if (gateRead(user.uid)[MK]) markGateSatisfied();
         else box.disabled = true;
