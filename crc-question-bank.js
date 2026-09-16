@@ -1,5 +1,5 @@
 /* Client Readiness & Compliance Training \u2014 scenario question bank
-   build: 2026091407
+   build: 2026091408
    Loaded by crc-quiz.html. Add questions to the array; the quiz page
    picks up whatever is here, so no change to the quiz page is needed.
    `answer` is the zero-based index of the correct option. */
