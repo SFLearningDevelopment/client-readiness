@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026092901 -->
+<!-- build: 2026093001 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026092901">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026093001">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 8 of 10 &middot; 3 min</span></p>
     <h1>Confidentiality, Data Privacy &amp; Security</h1>
     <p class="deck">What you must protect, and the rules for handling it.</p>
@@ -161,9 +161,21 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     <p>Follow the security and data-handling requirements that apply to your assignment, including the client's. Where the client's requirements are stricter than what you are used to, follow the client's.</p>
     <p>In practice this means: access only the data you need for your work; keep client data on approved systems and approved devices; never share credentials or work from someone else's login; lock your screen when you step away; use approved channels to transfer files; and do not copy client data to personal storage, personal email or personal devices.</p>
 
+    <p>Client data also stays off SF systems unless that has been specifically authorised for your assignment. An SF laptop, an SF drive, an SF repository, an SF chat workspace or an SF tool is not a safe place for it simply because it belongs to your employer. If you need client data somewhere else to do the work, get that agreed first.</p>
+
+    <h3>Passwords, credentials and secrets</h3>
+    <p>Passwords, credentials, API keys, tokens, certificates and connection strings open everything else, and most serious losses start with one of them being handled casually.</p>
+    <p>Store them and share them only through the approved mechanism for your assignment, such as an approved password manager or secrets store. Do not send them in chat, email, tickets, documents, spreadsheets or screenshots, and do not put them into source code or configuration files, even in a private repository. Do not reuse one credential across accounts, and do not keep a copy for convenience once the work is done.</p>
+    <p>If you think a credential has been exposed, say so immediately rather than waiting until you are certain. Raising it early is what limits the damage.</p>
+
     <h3>Do not share confidential information</h3>
     <p>Confidential client information must not be shared with anyone who is not authorised to receive it. That includes SF colleagues who are not on the assignment, friends, family, other clients, and anyone outside the organisation. It also includes public places: code repositories, forums, support sites, social media, conference talks and blog posts.</p>
     <p>It also includes <b>external tools</b>. Pasting client information into an online service, converter, analyser or storage tool means the information has left the controlled environment, whatever the tool promises.</p>
+
+    <h3>The client's privacy rules travel with the data</h3>
+    <p>Every client sets its own privacy rules, and those rules follow the information wherever it goes. Where a client's policy says that tickets, documents or project information must not be shared outside their organisation, that holds whatever tool you happen to be using at the time.</p>
+    <p>A familiar tool is not permission. Chat and collaboration tools such as Slack or Teams exist in both organisations, and being signed in to both at once does not join them. A document shared in a client meeting belongs in the client's own channels. It does not move into an SF workspace because SF uses the same tool, or because you are signed in to both on the same machine.</p>
+    <p>When you are not sure whether something may leave the client's environment, ask before you send it. Where the SF rule and the client rule differ, follow the stricter one.</p>
 
     <h3>Use of AI tools</h3>
     <p>Follow the applicable SF and client rules for using AI tools with client information. Assume that information entered into an AI tool has left your control unless the tool is approved for that purpose under those rules. Where the client has its own rules on AI tools, those rules apply to your work on that assignment. If you are not sure whether a tool is permitted for a given piece of information, ask before you use it.</p>
@@ -176,11 +188,16 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
         <li>Keep client data on approved systems and devices.</li>
         <li>Follow the stricter requirement where SF and client rules differ.</li>
         <li>Ask before using any tool that is not clearly approved.</li>
-        <li>Report a suspected loss or exposure of data immediately.</li>
+        <li>Report a suspected loss or exposure of data, or of a credential, immediately.</li>
+        <li>Keep passwords, keys and tokens in approved storage, and share them only through approved channels.</li>
+        <li>Keep client information inside the client's own tools and channels.</li>
       </ul></div>
       <div class="dd-dont"><span class="tag">Don't</span><ul>
         <li>Share credentials or use someone else's access.</li>
         <li>Copy client data to personal email, storage or devices.</li>
+        <li>Copy or store client data on SF systems unless it has been specifically authorised.</li>
+        <li>Send a credential in chat, email or a ticket, or put one into code or configuration.</li>
+        <li>Move client material into an SF workspace because the same tool is available there.</li>
         <li>Paste client information into unapproved external tools, including AI tools.</li>
         <li>Discuss client work in public places or on social media.</li>
         <li>Assume an obligation ends when the assignment ends.</li>
@@ -195,7 +212,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
   <p class="goal">Answer correctly to unlock the completion box. You can try as many times as you need.</p>
   <div class="stage-body">
     <div class="gq" data-i="0">
-      <p class="glab">Question 1 of 2</p>
+      <p class="glab">Question 1 of 4</p>
       <p class="gstem">A colleague on the assignment is locked out and asks to use your login for an hour. What should you do?</p>
       <label class="gopt"><input type="radio" name="g0" value="0"> <span>Share it, since they are on the same assignment.</span></label>
       <label class="gopt"><input type="radio" name="g0" value="1"> <span>Share it if the work is urgent and tell IT afterwards.</span></label>
@@ -204,13 +221,31 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       <div class="gfb" id="gfb-0"></div>
     </div>
     <div class="gq" data-i="1">
-      <p class="glab">Question 2 of 2</p>
+      <p class="glab">Question 2 of 4</p>
       <p class="gstem">You want to use an AI tool to help with a task that involves client information. What governs whether you can?</p>
       <label class="gopt"><input type="radio" name="g1" value="0"> <span>Whether the tool promises not to retain your input.</span></label>
       <label class="gopt"><input type="radio" name="g1" value="1"> <span>The applicable SF and client rules; if you are unsure whether a tool is permitted, ask before using it.</span></label>
       <label class="gopt"><input type="radio" name="g1" value="2"> <span>Whether you remove the client's name from the information first.</span></label>
       <label class="gopt"><input type="radio" name="g1" value="3"> <span>Whether other people on the team already use it.</span></label>
       <div class="gfb" id="gfb-1"></div>
+    </div>
+    <div class="gq" data-i="2">
+      <p class="glab">Question 3 of 4</p>
+      <p class="gstem">A colleague on your assignment needs an API key to finish a task today and asks you to send it across. What should you do?</p>
+      <label class="gopt"><input type="radio" name="g2" value="0"> <span>Send it in a chat message and delete the message afterwards.</span></label>
+      <label class="gopt"><input type="radio" name="g2" value="1"> <span>Send it by email, because email is kept on company systems.</span></label>
+      <label class="gopt"><input type="radio" name="g2" value="2"> <span>Share it only through the approved mechanism for your assignment.</span></label>
+      <label class="gopt"><input type="radio" name="g2" value="3"> <span>Put it in the ticket, so anyone on the team can find it when they need it.</span></label>
+      <div class="gfb" id="gfb-2"></div>
+    </div>
+    <div class="gq" data-i="3">
+      <p class="glab">Question 4 of 4</p>
+      <p class="gstem">A document is shared during a client meeting. You are signed in to both the client's chat tool and the SF workspace on the same machine. May you post the document in an SF channel?</p>
+      <label class="gopt"><input type="radio" name="g3" value="0"> <span>Yes. It is the same tool, used by both organisations.</span></label>
+      <label class="gopt"><input type="radio" name="g3" value="1"> <span>Yes, as long as the SF channel is a private one.</span></label>
+      <label class="gopt"><input type="radio" name="g3" value="2"> <span>No. The client's privacy rules follow the document, whichever tool you are using.</span></label>
+      <label class="gopt"><input type="radio" name="g3" value="3"> <span>Yes, provided you remove the client's name and logo first.</span></label>
+      <div class="gfb" id="gfb-3"></div>
     </div>
     <div class="gactions"><button class="pbtn" id="gcheck">Check answers</button><span class="gstate" id="gstate"></span></div>
   </div>
@@ -223,13 +258,13 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="crc-m7.html?v=2026092901">&#8592; Module 7</a>
-  <a class="pbtn off" id="nextbtn" href="crc-m9.html?v=2026092901">Module 9 &#8594;</a>
+  <a class="pbtn ghost" href="crc-m7.html?v=2026093001">&#8592; Module 7</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m9.html?v=2026093001">Module 9 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 8 of 10</div>
-  <div>build 2026092901</div>
+  <div>build 2026093001</div>
 </footer>
 
 </div>
@@ -617,7 +652,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <script type="module">
 (function(){
   var MK = "crc-m8";
-  var GATE = [{"answer": 2, "why": "Credentials are never shared and you never work from someone else's login. Urgency, a shared assignment and verbal approval change none of that."}, {"answer": 1, "why": "The SF and client rules decide it, and the client's rules apply to work on that assignment. A tool's own promises, light anonymising and common practice on the team are not the test."}];
+  var GATE = [{"answer": 2, "why": "Credentials are never shared and you never work from someone else's login. Urgency, a shared assignment and verbal approval change none of that."}, {"answer": 1, "why": "The SF and client rules decide it, and the client's rules apply to work on that assignment. A tool's own promises, light anonymising and common practice on the team are not the test."}, {"answer": 2, "why": "Keys, passwords and tokens move only through approved storage and approved sharing. Deleting a chat message afterwards does not undo the exposure, and a ticket or an email is a lasting copy."}, {"answer": 2, "why": "The client's policy travels with the information. Having access to both workspaces does not join them, and a familiar tool is not permission to move client material out of the client's environment."}];
 
   var KEYS = window.SFProgress.moduleKeys;
   function renderBar(state){
@@ -703,7 +738,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       } else {
         lockNext();
         /* The box is only ever enabled by a passed gate. Never default it
-           to enabled here -- that was the 2026092901 defect. */
+           to enabled here -- that was the 2026093001 defect. */
         if (!GATE.length) box.disabled = false;
         else if (gateRead(user.uid)[MK]) markGateSatisfied();
         else box.disabled = true;
