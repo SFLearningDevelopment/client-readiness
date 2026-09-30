@@ -175,7 +175,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </section>
 
 <div class="callout verify"><span class="tag">Keeping your progress</span>
-  <p>Progress is saved in this browser as soon as you tick a box, and to your SourceFuse record straight after. If you are opening this from the LMS, use the button that opens the course in its own tab &mdash; sign-in and saving do not work inside the LMS window.</p></div>
+  <p>Progress is saved in this browser as soon as you tick a box.</p></div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</div>
@@ -706,7 +706,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
         var row = document.querySelector('#row-' + mk + ' .mtitle');
         var name = row ? row.textContent : mk;
         if (!confirm('Redo "' + name + '"?\n\nThis clears your completion and your answers to that '
-                   + 'module\u2019s check questions, on this device and in your SF record.')) return;
+                   + 'module\u2019s check questions, on this device.')) return;
 
         btn.disabled = true;
         var prev = btn.textContent;
@@ -721,7 +721,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
         }).catch(function(e){
           console.error('[redo] Firestore reset failed', e);
           btn.disabled = false; btn.textContent = prev;
-          alert('Cleared on this device, but the reset did not reach your SF record. '
+          alert('Cleared on this device.. '
               + 'Reopen the dashboard while online and try again.');
         });
       });
