@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026093001 -->
+<!-- build: 2026100601 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -134,7 +134,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     <div class="facts">
       <div><b>Questions</b>10 scenarios</div>
       <div><b>Pass mark</b><span id="pm">&mdash;</span></div>
-      <div><b>Attempts</b><span class="fill-me">[Insert number of attempts]</span></div>
+      <div><b>Attempts</b><span id="att">&mdash;</span></div>
       <div><b>Required</b>Pass, then acknowledge</div>
     </div>
   </div>
@@ -186,7 +186,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 10 of 10 &middot; quiz and acknowledgement</div>
-  <div>build 2026093001</div>
+  <div>build 2026100601</div>
 </footer>
 
 </div>
@@ -522,6 +522,22 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     });
   }
 
+  /* Counts one graded submission of the quiz. Read-then-merge, so the count
+     survives across devices and is not affected by other courses. */
+  function recordAttempt(){
+    if (!ready) return Promise.reject(new Error("offline"));
+    return fs.getDoc(cpRef).then(function(snap){
+      var data = snap.exists() ? (snap.data() || {}) : {};
+      var obj  = (data.courses || {})[CP_COURSE_ID] || {};
+      var n = (typeof obj.quizAttempts === "number" ? obj.quizAttempts : 0) + 1;
+
+      var update = { email: user.email, name: user.displayName || user.email, courses: {} };
+      update.courses[CP_COURSE_ID] = { quizAttempts: n };
+      courseObj.quizAttempts = n;
+      return fs.setDoc(cpRef, update, { merge: true }).then(function(){ return n; });
+    });
+  }
+
   /* ---- Boot ------------------------------------------------------------ */
   async function start(u, moduleKey, onState){
     user = u;
@@ -568,6 +584,8 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       return done ? completeModule(mk) : Promise.resolve();
     },
     recordQuiz: recordQuiz,
+    recordAttempt: recordAttempt,
+    attempts: function(){ return (typeof courseObj.quizAttempts === "number") ? courseObj.quizAttempts : 0; },
     courseId: function(){ return CP_COURSE_ID; }
   };
 })();
@@ -654,6 +672,10 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 
     var lastResult = null;
 
+    function showAttempts(n){
+      document.getElementById('att').textContent = (n === 0) ? '0 so far' : (n + (n === 1 ? ' attempt' : ' attempts'));
+    }
+
     await window.SFProgress.start(user, MK, function(state){
       renderBar(state);
       if (window.SFProgress.isDone(state, MK)) {
@@ -665,10 +687,18 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       }
     });
 
+    showAttempts(window.SFProgress.attempts());
+
     document.getElementById('submit').addEventListener('click', function(){
       var g = grade();
       if (!g) return;
       lastResult = g;
+
+      /* Every graded submission counts, passed or not. */
+      showAttempts(window.SFProgress.attempts() + 1);
+      window.SFProgress.recordAttempt()
+        .then(function(n){ showAttempts(n); })
+        .catch(function(e){ console.error('[quiz] attempt count not saved', e); });
       var pct = Math.round((g.score / QS.length) * 100);
       var passed = g.score >= PASS_MARK;
       document.getElementById('result').innerHTML =
