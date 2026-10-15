@@ -1,4 +1,4 @@
-/* Client Readiness & Compliance Training \u2014 scenario question bank
+/* Workplace Conduct & Etiquettes Training \u2014 scenario question bank
    build: 2026101501
    Loaded by crc-quiz.html. Add questions to the array; the quiz page
    picks up whatever is here, so no change to the quiz page is needed.
