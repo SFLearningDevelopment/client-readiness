@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- build: 2026100601 -->
+<!-- build: 2026101501 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026100601">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026101501">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 6 of 10 &middot; 3 min</span></p>
     <h1>Conflict Resolution &amp; Grievances</h1>
     <p class="deck">How to handle disagreements at a client site without making the situation worse.</p>
@@ -213,206 +213,36 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 </div>
 
 <div class="pager">
-  <a class="pbtn ghost" href="crc-m5.html?v=2026100601">&#8592; Module 5</a>
-  <a class="pbtn off" id="nextbtn" href="crc-m7.html?v=2026100601">Module 7 &#8594;</a>
+  <a class="pbtn ghost" href="crc-m5.html?v=2026101501">&#8592; Module 5</a>
+  <a class="pbtn off" id="nextbtn" href="crc-m7.html?v=2026101501">Module 7 &#8594;</a>
 </div>
 
 <footer>
   <div>SF Knowledge Hub &middot; Module 6 of 10</div>
-  <div>build 2026100601</div>
+  <div>build 2026101501</div>
 </footer>
 
 </div>
 
-<!-- SF auth gate: Google SSO or email/password sign-in. -->
+<!-- No sign-in. The page opens straight into the course. -->
 <script>
 (function () {
-  /* Live config for sfcertification-grafana. */
-  const firebaseConfig = {
-    apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
-    authDomain: "sfcertification-grafana.firebaseapp.com",
-    projectId: "sfcertification-grafana",
-    storageBucket: "sfcertification-grafana.firebasestorage.app",
-    messagingSenderId: "227322696511",
-    appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
-  };
-  const ALLOWED_DOMAIN = "sourcefuse.com";
-
-  /* Platform admins have access to every course and are never checked
-     against a course's nominations. */
-  const ADMINS = ["jv.ravichandran@sourcefuse.com", "noushin.khan@sourcefuse.com"];
-
-  /* `courses` document id for this course. Nominations are read from
-     courses/{COURSE_ID}/nominations/{email}, managed in the SF Knowledge Hub. */
-  const COURSE_ID = "1nfc8ZRFFSokoxbkrETE";
-
-  let auth, GoogleProvider, signInPopup, signInEmail, onAuth, signOutFn, setPersist, localPersist, readNomination;
-  let readyCb = null;
-
-  async function initFirebase() {
-    const appMod  = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-    const authMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
-    const app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(firebaseConfig);
-    auth = authMod.getAuth(app);
-    GoogleProvider = authMod.GoogleAuthProvider;
-    signInPopup    = (p) => authMod.signInWithPopup(auth, p);
-    signInEmail    = (e, pw) => authMod.signInWithEmailAndPassword(auth, e, pw);
-    onAuth         = (cb) => authMod.onAuthStateChanged(auth, cb);
-    signOutFn      = () => authMod.signOut(auth);
-    setPersist     = authMod.setPersistence;
-    localPersist   = authMod.browserLocalPersistence;
-    try { await setPersist(auth, localPersist); } catch (_) {}
-    const fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-    const db = fsMod.getFirestore(app);
-    readNomination = (email) => fsMod.getDoc(fsMod.doc(db, "courses", COURSE_ID, "nominations", email));
-  }
-
-  function styleTag(){return `<style>
-    .sf-auth-backdrop{position:fixed;inset:0;background:rgba(16,38,60,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px}
-    .sf-auth-card{background:#fff;border-radius:22px;padding:42px 36px 38px;width:100%;max-width:420px;box-shadow:0 12px 40px rgba(10,30,55,.25);text-align:center;font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-    .sf-auth-badge{display:inline-block;background:var(--level,#2E6B34);color:#fff;font-weight:700;font-size:12px;padding:4px 11px;border-radius:14px;margin-bottom:14px}
-    .sf-auth-card h2{margin:0 0 12px;font-size:19px;font-weight:700;line-height:1.3;color:#15212d;font-family:inherit}
-    .sf-auth-sub{margin:0 auto 26px;max-width:330px;color:#5e6b79;font-size:14.5px;line-height:1.6}
-    .sf-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#366db0;color:#fff;border:0;border-radius:9px;padding:15px;font-size:15.5px;font-weight:600;cursor:pointer;font-family:inherit}
-    .sf-btn:hover{background:#2e5f9b}
-    .sf-btn svg{width:19px;height:19px;flex:none}
-    .sf-or{margin:20px 0;color:#9da7b2;font-size:11.5px;font-weight:500;letter-spacing:.14em}
-    .sf-inp{display:block;width:100%;box-sizing:border-box;border:1.5px solid #dfe5eb;border-radius:9px;padding:13px 14px;font-size:15px;margin:0 0 9px;color:#15212d;background:#fff;font-family:inherit}
-    .sf-inp::placeholder{color:#757575}
-    .sf-inp:focus{outline:none;border-color:#366db0}
-    .sf-inp + .sf-btn{margin-top:0}
-    .sf-err{color:#b5341a;font-size:13px;margin-top:12px;min-height:16px;line-height:1.5}
-  </style>`;}
-
-  function signinHTML(){return `
-    <div class="sf-auth-backdrop" id="sf-auth"><div class="sf-auth-card">
-      <h2>Client Readiness &amp; Compliance Training</h2>
-      <p class="sf-auth-sub">Sign in with your SourceFuse Google account to access the course and save your progress.</p>
-      <button class="sf-btn" id="sf-google" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M21.35 11.1H12v3.2h5.35c-.5 2.5-2.6 3.9-5.35 3.9a6.2 6.2 0 1 1 4.1-10.85l2.4-2.4A9.6 9.6 0 1 0 12 21.6c5 0 9.6-3.6 9.6-9.6 0-.3 0-.6-.05-.9z"/></svg> Sign in with Google</button>
-      <div class="sf-or">OR</div>
-      <input class="sf-inp" id="sf-email" type="email" placeholder="you@sourcefuse.com" autocomplete="username">
-      <input class="sf-inp" id="sf-pass" type="password" placeholder="Password" autocomplete="current-password">
-      <button class="sf-btn" id="sf-email-btn" type="button">Sign in with email</button>
-      <div class="sf-err" id="sf-err"></div>
-    </div></div>`;}
-
-  function fail(m){ const e = document.getElementById("sf-err"); if (e) e.textContent = m; }
-  function validDomain(x){
-    if (typeof x !== "string") return false;
-    return x.toLowerCase().endsWith("@" + ALLOWED_DOMAIN);
-  }
-  /* Same check as the SF Knowledge Hub: this course's nominations document
-     for the email exists and is not marked nominated: false. */
-  async function isNominated(x){
-    if (typeof x !== "string") return false;
-    if (ADMINS.indexOf(x.toLowerCase()) !== -1) return true;
-    if (!readNomination) return false;
+  /* Progress is kept in this browser only, under an id generated on first
+     visit, so a learner keeps their place across visits on this device. */
+  var IDK = "sf-crc-device";
+  function deviceId(){
     try {
-      const s = await readNomination(x.toLowerCase());
-      return s.exists() && s.data().nominated !== false;
-    } catch (e) {
-      console.log("[auth] nomination read failed:", e && e.message);
-      return false;
-    }
-  }
-  function showNotNominated(){
-    const card = document.getElementById("sf-auth");
-    if (!card) return;
-    card.style.display = "flex";
-    card.innerHTML = '<div class="sf-auth-card">'
-      + '<div class="sf-auth-badge">SF Knowledge Hub</div>'
-      + '<h2>You are not nominated to this course</h2>'
-      + '</div>';
-  }
-  function proceed(user){
-    const el = document.getElementById("sf-auth"); if (el) el.remove();
-    if (readyCb) readyCb(user, signOutFn);
-  }
-
-  function wireSignin(){
-    document.getElementById("sf-google").addEventListener("click", async () => {
-      fail("");
-      if (!signInPopup) return fail("Sign-in is still loading. Wait a moment and try again.");
-      const p = new GoogleProvider();
-      p.setCustomParameters({ hd: ALLOWED_DOMAIN });
-      try {
-        const r = await signInPopup(p);
-        const u = r && r.user;
-        const email = (u && u.email) || "";
-        if (!validDomain(email)) {
-          await signOutFn();
-          return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
-        }
-        if (!(await isNominated(email))) return showNotNominated();
-        return proceed(u);
-      } catch (e) {
-        const code = e && e.code;
-        console.log("[auth] signInWithPopup failed; code:", code, "| message:", e && e.message);
-        if (code === "auth/popup-blocked")
-          return fail("Your browser blocked the sign-in window. Allow pop-ups for this site, then try again.");
-        if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request")
-          return fail("Sign-in was closed before it finished. Try again.");
-        fail("Google sign-in couldn't complete. Try again, or contact the SF Knowledge Hub admin.");
+      var id = localStorage.getItem(IDK);
+      if (!id) {
+        id = "d-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem(IDK, id);
       }
-    });
-    document.getElementById("sf-email-btn").addEventListener("click", async () => {
-      fail("");
-      if (!signInEmail) return fail("Sign-in is still loading. Wait a moment and try again.");
-      const email = (document.getElementById("sf-email").value || "").trim().toLowerCase();
-      const pass  = document.getElementById("sf-pass").value || "";
-      if (!email || !pass) return fail("Enter your email and password.");
-      if (!validDomain(email)) return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
-      try {
-        const r = await signInEmail(email, pass);
-        const u = r && r.user;
-        if (!(await isNominated((u && u.email) || email))) return showNotNominated();
-        return proceed(u);
-      } catch (e) {
-        const code = e && e.code;
-        console.log("[auth] signInWithEmailAndPassword failed; code:", code, "| message:", e && e.message);
-        if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found")
-          return fail("Incorrect email or password.");
-        fail("Sign-in failed. Try again, or contact the SF Knowledge Hub admin.");
-      }
-    });
+      return id;
+    } catch (_) { return "d-local"; }
   }
-
-  async function mount(onReady){
-    readyCb = onReady;
-    document.head.insertAdjacentHTML("beforeend", styleTag());
-
-    document.body.insertAdjacentHTML("beforeend", signinHTML());
-    /* Hidden until onAuth reports no session. A signed-in nominated user
-       goes straight through without the overlay appearing at all. */
-    const authCard = document.getElementById("sf-auth");
-    if (authCard) authCard.style.display = "none";
-    try { await initFirebase(); }
-    catch (e) {
-      console.log("[auth] init failed:", e && e.message);
-      fail("Sign-in service didn't load. Reload the page.");
-      return;
-    }
-    if (onAuth) onAuth(async (u) => {
-      if (!u) {
-        /* No session anywhere on this origin: offer Google sign-in. */
-        if (authCard) authCard.style.display = "flex";
-        return;
-      }
-      if (!validDomain(u.email)) {
-        await signOutFn();
-        if (authCard) authCard.style.display = "flex";
-        return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
-      }
-      /* Signed in and on-domain, but not on the list. Do not sign them out
-         automatically: the session is shared with the SF Knowledge Hub and
-         dropping it would sign them out of the Hub too. */
-      if (!(await isNominated(u.email))) return showNotNominated();
-      proceed(u);
-    });
-    wireSignin();
-  }
-
-  window.SFAuth = { mount: mount };
+  window.SFAuth = {
+    mount: function (onReady) { if (onReady) onReady({ uid: deviceId(), email: "" }, null); }
+  };
 })();
 </script>
 
@@ -559,33 +389,9 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     var local = lsRead(user.uid);
     onState(local, false);                       /* paint from localStorage at once */
 
-    try {
-      var appMod  = await import(FB + "firebase-app.js");
-      fs          = await import(FB + "firebase-firestore.js");
-      var app = appMod.getApp();                 /* DEFAULT app, never a named one */
-      db    = fs.getFirestore(app);
-      cpRef = fs.doc(db, "courseProgress", user.uid);
-
-      var cs = await fs.getDoc(cpRef);
-      if (cs.exists()) courseObj = ((cs.data() || {}).courses || {})[CP_COURSE_ID] || {};
-      ready = true;
-
-      /* Merge: a module complete in either store stays complete. */
-      var merged = { modules: Object.assign({}, local.modules || {}, courseObj.modules || {}) };
-      lsWrite(user.uid, merged);
-      onState(merged, true);
-
-      /* Push anything localStorage had that Firestore did not. */
-      var pending = Object.keys(local.modules || {}).filter(function(k){ return !isDone(courseObj, k); });
-      for (var i = 0; i < pending.length; i++) {
-        try { await completeModule(pending[i]); } catch(e){ console.error("[progress] backfill failed", e); }
-      }
-
-      await setModuleInProgress(moduleKey);
-    } catch(e) {
-      console.error("[progress] Firestore unavailable, localStorage only:", e);
-      onState(lsRead(user.uid), false);
-    }
+    /* There is no sign-in on this page, so there is no SF record to sync
+       with. Progress is read from and written to this browser only. */
+    onState(local, false);
   }
 
   window.SFProgress = {
@@ -628,12 +434,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
   function gateWrite(uid, obj){
     try { localStorage.setItem(GK + uid, JSON.stringify(obj)); } catch(_) {}
   }
-  window.SFAuth.mount(async function(user, signOut){
-    document.getElementById('who').innerHTML =
-      (user.email || '') + ' <button class="signout" id="signout">Sign out</button>';
-    var so = document.getElementById('signout');
-    if (so && signOut) so.onclick = function(){ signOut().then(function(){ location.reload(); }); };
-
+  window.SFAuth.mount(async function(user){
     var box  = document.getElementById('cmplt');
     var lbl  = document.getElementById('lbl');
     var sync = document.getElementById('sync');
@@ -693,7 +494,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       } else {
         lockNext();
         /* The box is only ever enabled by a passed gate. Never default it
-           to enabled here -- that was the 2026100601 defect. */
+           to enabled here -- that was the 2026101501 defect. */
         if (!GATE.length) box.disabled = false;
         else if (gateRead(user.uid)[MK]) markGateSatisfied();
         else box.disabled = true;
@@ -709,15 +510,8 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       var state = window.SFProgress.setLocal(MK, true);   /* localStorage first */
       paint(state);
       unlockNext();
-      sync.textContent = 'Saved on this device. Syncing\u2026';
-      try {
-        await window.SFProgress.sync(MK, true);
-        var m = (state.modules || {})[MK] || {};
-        sync.textContent = 'Completed on ' + (m.completedOn || '') + ' \u00b7 saved to your SF record';
-      } catch(e) {
-        console.error('[progress] sync failed', e);
-        sync.textContent = 'Saved on this device. It will sync to your SF record next time you open this page online.';
-      }
+      var m = (state.modules || {})[MK] || {};
+      sync.textContent = 'Completed on ' + (m.completedOn || '');
     });
   });
 })();
