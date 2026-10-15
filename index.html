@@ -257,6 +257,24 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     </div></div>`;}
 
   function fail(m){ const e = document.getElementById("sf-err"); if (e) e.textContent = m; }
+  /* A Google sign-in can return a user whose top-level email is empty. Fall
+     back to the provider entry, then to the email claim on the ID token. */
+  async function resolveEmail(u){
+    if (!u) return "";
+    if (u.email) return u.email;
+    try {
+      const pd = (u.providerData || []).filter(function(p){ return p && p.email; })[0];
+      if (pd && pd.email) return pd.email;
+    } catch (_) {}
+    try {
+      const r = await u.getIdTokenResult();
+      const claims = (r && r.claims) || {};
+      if (claims.email) return claims.email;
+    } catch (e) {
+      console.log("[auth] could not read email from the ID token:", e && e.message);
+    }
+    return "";
+  }
   function validDomain(x){
     if (typeof x !== "string") return false;
     return x.toLowerCase().endsWith("@" + ALLOWED_DOMAIN);
@@ -298,7 +316,8 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       try {
         const r = await signInPopup(p);
         const u = r && r.user;
-        const email = (u && u.email) || "";
+        const email = await resolveEmail(u);
+        console.log("[auth] Google sign-in resolved email:", email || "(empty)");
         if (!validDomain(email)) {
           await signOutFn();
           return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
@@ -358,7 +377,8 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
         if (authCard) authCard.style.display = "flex";
         return;
       }
-      if (!validDomain(u.email)) {
+      const email = await resolveEmail(u);
+      if (!validDomain(email)) {
         await signOutFn();
         if (authCard) authCard.style.display = "flex";
         return fail("Sign in with your @" + ALLOWED_DOMAIN + " account.");
@@ -366,7 +386,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       /* Signed in and on-domain, but not on the list. Do not sign them out
          automatically: the session is shared with the SF Knowledge Hub and
          dropping it would sign them out of the Hub too. */
-      if (!(await isNominated(u.email))) return showNotNominated();
+      if (!(await isNominated(email))) return showNotNominated();
       proceed(u);
     });
     wireSignin();
