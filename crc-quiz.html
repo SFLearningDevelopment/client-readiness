@@ -127,7 +127,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <body>
 <header class="masthead">
   <div class="wrap">
-    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026101501">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Workplace Conduct & Etiquettes Training</p>
+    <p class="crumb"><span id="who" class="who"></span><a class="back" href="index.html?v=2026101501">&#8592; Dashboard</a> &middot; SF Knowledge Hub &middot; Client Readiness &amp; Compliance Training</p>
     <p><span class="chip">Module 10 of 10 &middot; 1 min</span></p>
     <h1>Scenario quiz &amp; acknowledgement</h1>
     <p class="deck">Ten short scenarios drawn from situations that arise on client assignments. Choose the best response for each, then submit your acknowledgement to complete the quarter.</p>
@@ -168,7 +168,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     <p class="goal">Required before the quarter is marked complete.</p>
     <div class="stage-body">
       <div class="callout verify"><span class="tag">You are confirming</span>
-        <p>I confirm that I have completed the Workplace Conduct & Etiquettes Training for this quarter.</p>
+        <p>I confirm that I have completed the Client Readiness &amp; Compliance Training for this quarter.</p>
         <p>I understand that I remain a SourceFuse employee while working at a client location or on a client assignment, that the client manages day-to-day work and delivery, and that SF manages the employment relationship.</p>
         <p>I understand the SF escalation path &mdash; Account Manager, then Delivery Manager, then HR &mdash; and that SF employment and internal matters are not to be escalated independently to the client's HR or management. I understand that serious or sensitive concerns may be reported directly to SF HR.</p>
         <p>I understand my responsibilities for professional conduct at client sites, client communication and professional boundaries, attendance, leave and performance processes, conflict resolution, maintaining a respectful workplace, confidentiality, data privacy and security including the use of AI tools, and ethics and compliance.</p>
@@ -180,6 +180,19 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
         <p class="sync" id="acksync"></p>
       </div>
       <div class="pager"><span></span><button class="pbtn" id="acksubmit">Submit acknowledgement</button></div>
+
+      <div id="idblock" style="display:none">
+        <div class="done">
+          <span class="tag">Record your completion</span>
+          <p class="idp">Enter your details so your completion is recorded against you.</p>
+          <label class="idlbl" for="emp-id">Emp ID</label>
+          <input class="idinp" id="emp-id" type="text" autocomplete="off" placeholder="Your employee ID">
+          <label class="idlbl" for="emp-email">SF Email ID</label>
+          <input class="idinp" id="emp-email" type="email" autocomplete="email" placeholder="you@sourcefuse.com">
+          <p class="sync" id="idsync"></p>
+        </div>
+        <div class="pager"><span></span><button class="pbtn" id="idsubmit">Save my completion</button></div>
+      </div>
     </div>
   </section>
 </div>
@@ -218,7 +231,7 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
 <!-- Progress: localStorage written first, Firestore synced after. -->
 <script type="module">
 (function(){
-  /* `courses` document id for Workplace Conduct & Etiquettes Training.
+  /* `courses` document id for Client Readiness & Compliance Training.
      Same value in every file of this course. */
   var CP_COURSE_ID = "1nfc8ZRFFSokoxbkrETE";
 
@@ -371,8 +384,56 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
     onState(local, false);
   }
 
+  /* ---- Completion record ------------------------------------------------
+     One document per submission in clientReadinessCompletions. No sign-in:
+     the rules allow create only for this course id, with an Emp ID and an
+     @sourcefuse.com address supplied by the learner.                      */
+  var FBCFG = {
+    apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+    authDomain: "sfcertification-grafana.firebaseapp.com",
+    projectId: "sfcertification-grafana",
+    storageBucket: "sfcertification-grafana.firebasestorage.app",
+    messagingSenderId: "227322696511",
+    appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+  };
+  var COURSE_NAME = "Client Readiness & Compliance Training";
+
+  async function saveCompletion(info){
+    var appMod = await import(FB + "firebase-app.js");
+    var fsMod  = await import(FB + "firebase-firestore.js");
+    var app = appMod.getApps().length ? appMod.getApp() : appMod.initializeApp(FBCFG);
+    var db  = fsMod.getFirestore(app);
+
+    var local = lsRead(user.uid);
+    var mods  = local.modules || {};
+    var done  = {};
+    MODULE_KEYS.forEach(function(k){
+      if (mods[k] && mods[k].completedOn) done[k] = mods[k].completedOn + " " + mods[k].completedAt;
+    });
+    var t = stamp();
+    var body = {
+      courseId: CP_COURSE_ID,
+      courseName: COURSE_NAME,
+      empId: info.empId,
+      email: info.email,
+      score: info.score,
+      total: info.total,
+      percent: info.percent,
+      passed: info.passed,
+      passMark: info.passMark,
+      attempts: (typeof local.quizAttempts === "number") ? local.quizAttempts : 0,
+      modulesCompleted: Object.keys(done).length,
+      moduleDates: done,
+      deviceId: user.uid,
+      submittedOn: t.date,
+      submittedAt: t.time
+    };
+    return fsMod.addDoc(fsMod.collection(db, "clientReadinessCompletions"), body);
+  }
+
   window.SFProgress = {
     start: start,
+    saveCompletion: saveCompletion,
     moduleKeys: MODULE_KEYS,
     isDone: isDone,
     read: function(){ return user ? lsRead(user.uid) : {}; },
@@ -522,6 +583,41 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
       document.getElementById('acklbl').classList.add('checked');
       document.getElementById('acksubmit').disabled = true;
       sync.textContent = 'Recorded in this browser. This quarter is complete.';
+
+      var idblock = document.getElementById('idblock');
+      idblock.style.display = 'block';
+      idblock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    document.getElementById('idsubmit').addEventListener('click', async function(){
+      var out = document.getElementById('idsync');
+      var btn = document.getElementById('idsubmit');
+      var empId = (document.getElementById('emp-id').value || '').trim();
+      var email = (document.getElementById('emp-email').value || '').trim().toLowerCase();
+
+      if (!empId) { out.textContent = 'Enter your Emp ID.'; return; }
+      if (!/^[^@\s]+@sourcefuse\.com$/.test(email)) {
+        out.textContent = 'Enter your @sourcefuse.com email address.'; return;
+      }
+      if (!lastResult) { out.textContent = 'Submit your answers first.'; return; }
+
+      btn.disabled = true;
+      out.textContent = 'Saving…';
+      var pct = Math.round((lastResult.score / QS.length) * 100);
+      try {
+        await window.SFProgress.saveCompletion({
+          empId: empId, email: email,
+          score: lastResult.score, total: QS.length, percent: pct,
+          passed: true, passMark: PASS_MARK
+        });
+        document.getElementById('emp-id').disabled = true;
+        document.getElementById('emp-email').disabled = true;
+        out.textContent = 'Saved. Your completion is recorded against ' + empId + '.';
+      } catch(e) {
+        console.error('[completion] save failed', e);
+        btn.disabled = false;
+        out.textContent = 'Could not save your completion. Check your connection and try again.';
+      }
     });
   });
 })();
@@ -531,6 +627,13 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
   .opt{display:flex;gap:11px;align-items:flex-start;font-size:16px;margin-bottom:9px;cursor:pointer;max-width:70ch}
   .opt input{margin-top:6px;accent-color:var(--level);width:16px;height:16px;flex:none}
   .fb{margin-top:16px}
+  .idp{font-size:15px;margin:0 0 14px}
+  .idlbl{display:block;font-family:var(--sans);font-size:12.5px;font-weight:640;color:var(--ink-2);margin:0 0 5px}
+  .idinp{display:block;width:100%;max-width:360px;box-sizing:border-box;border:1.5px solid var(--rule);
+    border-radius:8px;padding:11px 12px;font-size:15px;font-family:var(--sans);background:#fff;
+    color:var(--ink);margin:0 0 14px}
+  .idinp:focus{outline:none;border-color:var(--level)}
+  .idinp:disabled{background:#F1F4F1;color:var(--ink-2)}
   .pbtn:disabled{opacity:.55;cursor:default}
   button.pbtn{border:0;cursor:pointer;font-family:var(--sans)}
 </style>
