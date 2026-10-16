@@ -628,12 +628,16 @@ footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:18px;
   .opt input{margin-top:6px;accent-color:var(--level);width:16px;height:16px;flex:none}
   .fb{margin-top:16px}
   .idp{font-size:15px;margin:0 0 14px}
-  .idlbl{display:block;font-family:var(--sans);font-size:12.5px;font-weight:640;color:var(--ink-2);margin:0 0 5px}
-  .idinp{display:block;width:100%;max-width:360px;box-sizing:border-box;border:1.5px solid var(--rule);
-    border-radius:8px;padding:11px 12px;font-size:15px;font-family:var(--sans);background:#fff;
-    color:var(--ink);margin:0 0 14px}
-  .idinp:focus{outline:none;border-color:var(--level)}
-  .idinp:disabled{background:#F1F4F1;color:var(--ink-2)}
+  /* Scoped to .done so these win over the checkbox rules .done input and
+     .done label, which otherwise size the fields to a 16px square. */
+  .done label.idlbl{display:block;font-family:var(--sans);font-size:12.5px;font-weight:640;
+    color:var(--ink-2);margin:0 0 5px;cursor:default}
+  .done input.idinp{display:block;width:100%;max-width:360px;height:auto;flex:initial;
+    box-sizing:border-box;border:1.5px solid var(--rule);border-radius:8px;
+    padding:11px 12px;font-size:15px;line-height:1.4;font-family:var(--sans);background:#fff;
+    color:var(--ink);margin:0 0 14px;accent-color:auto}
+  .done input.idinp:focus{outline:none;border-color:var(--level)}
+  .done input.idinp:disabled{background:#F1F4F1;color:var(--ink-2)}
   .pbtn:disabled{opacity:.55;cursor:default}
   button.pbtn{border:0;cursor:pointer;font-family:var(--sans)}
 </style>
